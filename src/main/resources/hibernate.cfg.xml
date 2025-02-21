@@ -20,6 +20,8 @@
 		<!-- Establece el contexto de la sesion -->
 		<property name="current_session_context_class">thread</property>
 		<property name="hbm2ddl.auto">update</property>
-		<mapping class="hibernate2.crudmultitabla.EntidadPersona" />
+		<mapping class="hibernate2.crudmultitabla.EntidadUsuario" />
+		<mapping class="hibernate2.crudmultitabla.EntidadLike" />
+		<mapping class="hibernate2.crudmultitabla.EntidadPost" />
 	</session-factory>
 </hibernate-configuration>

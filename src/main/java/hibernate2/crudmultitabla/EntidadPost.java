@@ -1,6 +1,7 @@
 package hibernate2.crudmultitabla;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -23,17 +24,15 @@ public class EntidadPost implements Serializable {
 	private EntidadUsuario usuario;
 
 	@Column(name = "created_at")
-	@Temporal(TemporalType.DATE)
-	private Date createdAt;
+	private LocalDate createdAt;
 
 	@Column(name = "updated_at")
-	@Temporal(TemporalType.DATE)
-	private Date updatedAt;
+	private LocalDate updatedAt;
 
 	public EntidadPost() {
 	}
 
-	public EntidadPost(EntidadUsuario usuario, Date createdAt, Date updatedAt) {
+	public EntidadPost(EntidadUsuario usuario, LocalDate createdAt, LocalDate updatedAt) {
 
 		setUsuario(usuario);
 		setCreatedAt(createdAt);
@@ -57,19 +56,19 @@ public class EntidadPost implements Serializable {
 		this.usuario = usuario;
 	}
 
-	public Date getCreatedAt() {
+	public LocalDate getCreatedAt() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(Date createdAt) {
+	public void setCreatedAt(LocalDate createdAt) {
 		this.createdAt = createdAt;
 	}
 
-	public Date getUpdatedAt() {
+	public LocalDate getUpdatedAt() {
 		return updatedAt;
 	}
 
-	public void setUpdatedAt(Date updatedAt) {
+	public void setUpdatedAt(LocalDate updatedAt) {
 		this.updatedAt = updatedAt;
 	}
 

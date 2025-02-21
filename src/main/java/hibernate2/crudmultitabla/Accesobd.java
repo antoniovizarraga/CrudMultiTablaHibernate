@@ -1,5 +1,6 @@
 package hibernate2.crudmultitabla;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -108,6 +109,30 @@ public class Accesobd {
 
 		cerrar();
 	}
+	
+	public static List leerUsuarioNombre(String name) {
+	    return sesion.createQuery(
+	        "SELECT Nombre FROM Usuarios WHERE Nombre LIKE :nombreUser")
+	        .setParameter("nombreUser", name)
+	        .setMaxResults(10)
+	        .getResultList();
+	}
+	
+	public static List leerUsuarioApellidos(String apellidos) {
+	    return sesion.createQuery(
+	        "SELECT Apellidos FROM Usuarios WHERE Apellidos LIKE :apellidosUser")
+	        .setParameter("apellidosUser", apellidos)
+	        .setMaxResults(10)
+	        .getResultList();
+	}
+	
+	public static List leerUsuarioUsername(String username) {
+	    return sesion.createQuery(
+	        "SELECT Username FROM Usuarios WHERE Username LIKE :usernameUser")
+	        .setParameter("usernameUser", username)
+	        .setMaxResults(10)
+	        .getResultList();
+	}
 
 	// Actualizar Persona
 	public static void actualizarUsuario(int id, String nombre, String apellidos, String username, String password,
@@ -193,7 +218,7 @@ public class Accesobd {
 	}
 
 	// Actualizar Persona
-	public static void actualizarPost(int id, EntidadUsuario usuario, Date createdAt, Date updatedAt) throws Exception {
+	public static void actualizarPost(int id, EntidadUsuario usuario, LocalDate createdAt, LocalDate updatedAt) throws Exception {
 		sesion = abrir();
 		EntidadPost post = sesion.get(EntidadPost.class, id);
 		post.setUsuario(usuario);
