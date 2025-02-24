@@ -52,11 +52,8 @@ public class App {
 
 			case 1:
 				
-				System.out.println("¿Qué tabla quieres leer?");
-				System.out.println("1. Usuarios");
-				System.out.println("2. Posts");
-				System.out.println("3. Likes");
-				System.out.println("Introduzca el número correspondiente a la tabla.");
+				menuTabla();
+				
 				
 				userInput = sc.nextInt();
 				
@@ -125,7 +122,7 @@ public class App {
 							break;
 							
 						case 3:
-							System.out.println("Escriba el nombre de usuario por el que filtrar.");
+							System.out.println("Escriba el username por el que filtrar.");
 							
 							username = sc.nextLine();
 							
@@ -142,10 +139,17 @@ public class App {
 						sc.nextLine();
 
 						try {
-							Accesobd.leer(userInput);
+							
+							if(eleccionTabla == 2) {
+								Accesobd.leerPost(userInput);
+							} else {
+								Accesobd.leerLike(userInput);
+							}
+							
+							
 						} catch (Exception e) {
 							System.out.println(ConsoleColors.RED
-									+ "Error: No se pudo leer los datos de la persona especificada en la tabla Persona."
+									+ "Error: No se pudo leer los datos de la fila especificada en la tabla."
 									+ ConsoleColors.RESET);
 						}
 					}
@@ -156,28 +160,42 @@ public class App {
 				break;
 
 			case 2:
-
-				System.out.println("Introduzca el nombre: ");
-				nombre = sc.nextLine();
-
-				System.out.println("Introduzca los apellidos: ");
-				apellidos = sc.nextLine();
-
-				System.out.println("Introduzca una edad: ");
-
-				edad = sc.nextInt();
-
+				
+				menuTabla();
+				
+				userInput = sc.nextInt();
+				
 				sc.nextLine();
+				
+				eleccionTabla = userInput;
+				
+				
 
-				persona.setNombre(nombre);
-				persona.setApellidos(apellidos);
-				persona.setEdad(edad);
+				switch (eleccionTabla) {
+				
+				case 1:
+					
+					break;
+
+					
+				case 2:
+					
+					break;
+					
+				case 3:
+					
+					break;
+				}
+
+				//persona.setNombre(nombre);
+				//persona.setApellidos(apellidos);
+				//persona.setEdad(edad);
 
 				try {
 
 					Accesobd.abrir();
 
-					Accesobd.guardar(persona);
+					//Accesobd.guardar(persona);
 
 					System.out.println(ConsoleColors.GREEN + "Persona guardada correctamente." + ConsoleColors.RESET);
 
@@ -212,7 +230,7 @@ public class App {
 				sc.nextLine();
 
 				try {
-					Accesobd.actualizar(id, nombre, apellidos, edad);
+					//Accesobd.actualizar(id, nombre, apellidos, edad);
 
 					System.out
 							.println(ConsoleColors.GREEN + "Persona actualizada correctamente." + ConsoleColors.RESET);
@@ -247,7 +265,7 @@ public class App {
 				
 				if(userInput == 1) {
 					try {
-						Accesobd.borrar(id);
+						//Accesobd.borrar(id);
 						
 						System.out.println(ConsoleColors.GREEN + "Persona eliminada correctamente." + ConsoleColors.RESET);
 					} catch (Exception e) {
@@ -275,5 +293,13 @@ public class App {
 		System.out.println("3. Editar Tabla.");
 		System.out.println("4. Borrar Tabla.");
 		System.out.println("5. Salir.");
+	}
+	
+	private static void menuTabla() {
+		System.out.println("¿Con qué tabla quieres interactuar?");
+		System.out.println("1. Usuarios");
+		System.out.println("2. Posts");
+		System.out.println("3. Likes");
+		System.out.println("Introduzca el número correspondiente a la tabla.");
 	}
 }
