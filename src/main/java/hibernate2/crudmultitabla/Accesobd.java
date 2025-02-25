@@ -58,9 +58,8 @@ public class Accesobd {
 
 		sesion = abrir();
 		int id = (int) sesion.save(usuario);
-		transaction.commit();
-		System.out.println(id);
-		sf.close();
+
+		cerrar();
 	}
 
 	// Leer Persona
@@ -76,6 +75,16 @@ public class Accesobd {
 		System.out.println("Contraseña: " + usuario.getPassword());
 		System.out.println("Correo electrónico: " + usuario.getEmail());
 		cerrar();
+	}
+	
+	public static EntidadUsuario obtenerUsuario(int id) throws Exception {
+		sesion = abrir();
+		
+		EntidadUsuario usuario = sesion.load(EntidadUsuario.class, id);
+		
+		cerrar();
+		
+		return usuario;
 	}
 
 	// Leer Persona con todos sus datos
@@ -99,6 +108,7 @@ public class Accesobd {
 			if (usuarioListado != null) {
 				System.out.println("ID: " + Integer.toString(usuarioListado.getIdUsuario()));
 				System.out.println("Nombre: " + usuarioListado.getNombre());
+				System.out.println("Apellidos: " + usuarioListado.getApellidos());
 				System.out.println("Usuario: " + usuarioListado.getUsername());
 				System.out.println("Contraseña: " + usuarioListado.getPassword());
 				System.out.println("Correo electrónico: " + usuarioListado.getEmail());
@@ -109,29 +119,55 @@ public class Accesobd {
 
 		cerrar();
 	}
-	
+
 	public static List leerUsuarioNombre(String name) {
-	    return sesion.createQuery(
-	        "SELECT Nombre FROM Usuarios WHERE Nombre LIKE :nombreUser")
-	        .setParameter("nombreUser", name)
-	        .setMaxResults(10)
-	        .getResultList();
+		try {
+			sesion = abrir();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		List listado = sesion.createQuery("SELECT nombre FROM EntidadUsuario WHERE nombre LIKE :nombreUser")
+				.setParameter("nombreUser", name).setMaxResults(10).getResultList();
+
+		cerrar();
+
+		return listado;
 	}
-	
+
 	public static List leerUsuarioApellidos(String apellidos) {
-	    return sesion.createQuery(
-	        "SELECT Apellidos FROM Usuarios WHERE Apellidos LIKE :apellidosUser")
-	        .setParameter("apellidosUser", apellidos)
-	        .setMaxResults(10)
-	        .getResultList();
+
+		try {
+			sesion = abrir();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		List listado = sesion.createQuery("SELECT apellidos FROM EntidadUsuario WHERE apellidos LIKE :apellidosUser")
+				.setParameter("apellidosUser", apellidos).setMaxResults(10).getResultList();
+
+		cerrar();
+
+		return listado;
 	}
-	
+
 	public static List leerUsuarioUsername(String username) {
-	    return sesion.createQuery(
-	        "SELECT Username FROM Usuarios WHERE Username LIKE :usernameUser")
-	        .setParameter("usernameUser", username)
-	        .setMaxResults(10)
-	        .getResultList();
+
+		try {
+			sesion = abrir();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		List listado = sesion.createQuery("SELECT username FROM EntidadUsuario WHERE username LIKE :usernameUser")
+				.setParameter("usernameUser", username).setMaxResults(10).getResultList();
+
+		cerrar();
+
+		return listado;
 	}
 
 	// Actualizar Persona
@@ -185,6 +221,15 @@ public class Accesobd {
 		System.out.println("Actualizado el: " + post.getUpdatedAt());
 		cerrar();
 	}
+	
+	public static EntidadPost obtenerPost(int id) throws Exception {
+		sesion = abrir();
+		EntidadPost post = sesion.load(EntidadPost.class, id);
+		
+		cerrar();
+		
+		return post;
+	}
 
 	// Leer Persona con todos sus datos
 	public static void leerListaPosts() throws Exception {
@@ -218,7 +263,8 @@ public class Accesobd {
 	}
 
 	// Actualizar Persona
-	public static void actualizarPost(int id, EntidadUsuario usuario, LocalDate createdAt, LocalDate updatedAt) throws Exception {
+	public static void actualizarPost(int id, EntidadUsuario usuario, LocalDate createdAt, LocalDate updatedAt)
+			throws Exception {
 		sesion = abrir();
 		EntidadPost post = sesion.get(EntidadPost.class, id);
 		post.setUsuario(usuario);
@@ -237,13 +283,6 @@ public class Accesobd {
 	}
 
 	/* Fin métodos Posts */
-	
-	
-	
-	
-	
-	
-	
 
 	/* Métodos para gestionar Likes */
 
