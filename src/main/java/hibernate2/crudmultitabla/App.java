@@ -247,8 +247,6 @@ public class App {
 
 						Accesobd.guardarPost(post);
 
-						Accesobd.cerrar();
-
 						System.out.println(ConsoleColors.GREEN + "Post guardado correctamente." + ConsoleColors.RESET);
 
 					} catch (Exception e) {
@@ -284,7 +282,6 @@ public class App {
 
 						Accesobd.guardarLike(like);
 
-						Accesobd.cerrar();
 
 						System.out.println(ConsoleColors.GREEN + "Like guardado correctamente." + ConsoleColors.RESET);
 

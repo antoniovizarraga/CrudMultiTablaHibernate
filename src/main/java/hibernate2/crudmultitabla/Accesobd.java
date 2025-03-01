@@ -76,14 +76,14 @@ public class Accesobd {
 		System.out.println("Correo electrónico: " + usuario.getEmail());
 		cerrar();
 	}
-	
+
 	public static EntidadUsuario obtenerUsuario(int id) throws Exception {
 		sesion = abrir();
-		
-		EntidadUsuario usuario = sesion.load(EntidadUsuario.class, id);
-		
+
+		EntidadUsuario usuario = sesion.get(EntidadUsuario.class, id);
+
 		cerrar();
-		
+
 		return usuario;
 	}
 
@@ -203,9 +203,11 @@ public class Accesobd {
 
 		sesion = abrir();
 		int id = (int) sesion.save(post);
-		transaction.commit();
+
+		cerrar();
+
 		System.out.println(id);
-		sf.close();
+
 	}
 
 	// Leer Persona
@@ -221,13 +223,13 @@ public class Accesobd {
 		System.out.println("Actualizado el: " + post.getUpdatedAt());
 		cerrar();
 	}
-	
+
 	public static EntidadPost obtenerPost(int id) throws Exception {
 		sesion = abrir();
-		EntidadPost post = sesion.load(EntidadPost.class, id);
-		
+		EntidadPost post = sesion.get(EntidadPost.class, id);
+
 		cerrar();
-		
+
 		return post;
 	}
 
@@ -270,6 +272,7 @@ public class Accesobd {
 		post.setUsuario(usuario);
 		post.setCreatedAt(createdAt);
 		post.setUpdatedAt(updatedAt);
+		sesion.update(post);
 		cerrar();
 	}
 
@@ -290,9 +293,9 @@ public class Accesobd {
 
 		sesion = abrir();
 		int id = (int) sesion.save(like);
-		transaction.commit();
+		cerrar();
 		System.out.println(id);
-		sf.close();
+
 	}
 
 	// Leer Persona
