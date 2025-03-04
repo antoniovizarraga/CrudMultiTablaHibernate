@@ -25,6 +25,7 @@ public class App {
 		int id;
 		int id2;
 		int id3;
+		boolean state;
 		LocalDate fechaCreacion = LocalDate.now();
 		LocalDate fechaUpdate = LocalDate.now();
 
@@ -361,7 +362,7 @@ public class App {
 					System.out.println("Datos a editar:");
 
 					System.out.println("Introduzca el ID del usuario al que hace referencia el Post:");
-					id = sc.nextInt();
+					id2 = sc.nextInt();
 
 					sc.nextLine();
 
@@ -379,7 +380,7 @@ public class App {
 
 					try {
 						
-						usuario = Accesobd.obtenerUsuario(id);
+						usuario = Accesobd.obtenerUsuario(id2);
 
 						Accesobd.actualizarPost(id, usuario, fechaCreacion, fechaUpdate);
 
@@ -436,44 +437,208 @@ public class App {
 
 			case 4:
 
-				System.out.println("Introduzca la ID de la persona que quiera eliminar.");
-
-				id = sc.nextInt();
-
-				sc.nextLine();
-
-				System.out.println(ConsoleColors.RED_BACKGROUND + "¡ATENCIÓN!" + ConsoleColors.RESET);
-				System.out.println(ConsoleColors.YELLOW + "Estás a punto de eliminar a la persona con ID: "
-						+ Integer.toString(id) + ConsoleColors.RESET);
-
-				System.out.println(ConsoleColors.YELLOW + "¿Quieres confirmar estos cambios?" + ConsoleColors.RESET);
-				System.out.println(ConsoleColors.RED_BOLD_BRIGHT
-						+ "Recuerda que una vez confirmados estos cambios, no podrán revertirse.");
-				System.out.println(ConsoleColors.YELLOW
-						+ "Escriba: \"0\" si no quiere eliminar a dicha persona, o escriba: \"1\" si quiere confirmar su eliminación."
-						+ ConsoleColors.RESET);
+				menuTabla();
 
 				userInput = sc.nextInt();
 
 				sc.nextLine();
 
-				if (userInput == 1) {
-					try {
-						// Accesobd.borrar(id);
+				eleccionTabla = userInput;
+				
+				
+				switch (eleccionTabla) {
+				
+				
+				case 1:
+					
+					System.out.println("Introduzca la ID del usuario a eliminar.");
 
-						System.out.println(
-								ConsoleColors.GREEN + "Persona eliminada correctamente." + ConsoleColors.RESET);
-					} catch (Exception e) {
-						System.out.println(ConsoleColors.RED
-								+ "No pudo eliminarse a la persona. Puede ser que dicha persona no exista en la BBDD."
+					id = sc.nextInt();
+
+					sc.nextLine();
+
+					System.out.println(ConsoleColors.RED_BACKGROUND + "¡ATENCIÓN!" + ConsoleColors.RESET);
+					System.out.println(ConsoleColors.YELLOW + "Estás a punto de eliminar a un usuario que contiene los siguientes datos: "
+							+ ConsoleColors.RESET);
+					
+					try {
+						Accesobd.leerUsuario(id);
+						
+						System.out.println(ConsoleColors.YELLOW + "¿Quieres confirmar estos cambios?" + ConsoleColors.RESET);
+						System.out.println(ConsoleColors.RED_BOLD_BRIGHT
+								+ "Recuerda que una vez confirmados estos cambios, no podrán revertirse.");
+						System.out.println(ConsoleColors.YELLOW
+								+ "Escriba: \"0\" si no quiere eliminar a dicho usuario, o escriba: \"1\" si quiere confirmar su eliminación."
 								+ ConsoleColors.RESET);
+
+						userInput = sc.nextInt();
+
+						sc.nextLine();
+
+						if (userInput == 1) {
+							try {
+								state = Accesobd.borrarUsuario(id);
+
+								if(!state) {
+									System.out.println(
+											ConsoleColors.GREEN + "Usuario eliminado correctamente." + ConsoleColors.RESET);
+								} else {
+									System.out.println(ConsoleColors.RED
+											+ "No pudo eliminarse al usuario. Puede ser que dicho usuario no exista en la BBDD."
+											+ ConsoleColors.RESET);
+								}
+								
+								
+								
+							} catch (Exception e) {
+								System.out.println(ConsoleColors.RED
+										+ "No pudo eliminarse al usuario. Puede ser que dicho usuario no exista en la BBDD."
+										+ ConsoleColors.RESET);
+							}
+
+						} else {
+							System.out.println(ConsoleColors.CYAN + "Cambios revertidos. No se ha efectuado ningún cambio."
+									+ ConsoleColors.RESET);
+						}
+						
+					} catch (Exception e) {
+						System.out.println(ConsoleColors.RED + "Error: El usuario que has especificado no existe en la BBDD.");
 					}
 
-				} else {
-					System.out.println(ConsoleColors.CYAN + "Cambios revertidos. No se ha efectuado ningún cambio."
-							+ ConsoleColors.RESET);
-				}
+					
 
+					
+					
+					break;
+					
+				
+				case 2:
+					
+					System.out.println("Introduzca la ID del post a eliminar.");
+
+					id = sc.nextInt();
+
+					sc.nextLine();
+
+					System.out.println(ConsoleColors.RED_BACKGROUND + "¡ATENCIÓN!" + ConsoleColors.RESET);
+					System.out.println(ConsoleColors.YELLOW + "Estás a punto de eliminar un post que contiene los siguientes datos: "
+							+ ConsoleColors.RESET);
+					
+					try {
+						Accesobd.leerPost(id);
+						
+						System.out.println(ConsoleColors.YELLOW + "¿Quieres confirmar estos cambios?" + ConsoleColors.RESET);
+						System.out.println(ConsoleColors.RED_BOLD_BRIGHT
+								+ "Recuerda que una vez confirmados estos cambios, no podrán revertirse.");
+						System.out.println(ConsoleColors.YELLOW
+								+ "Escriba: \"0\" si no quiere eliminar dicho post, o escriba: \"1\" si quiere confirmar su eliminación."
+								+ ConsoleColors.RESET);
+
+						userInput = sc.nextInt();
+
+						sc.nextLine();
+
+						if (userInput == 1) {
+							try {
+								state = Accesobd.borrarPost(id);
+								
+								if(!state) {
+
+									System.out.println(
+											ConsoleColors.GREEN + "Post eliminado correctamente." + ConsoleColors.RESET);
+								} else {
+									System.out.println(ConsoleColors.RED
+											+ "No pudo eliminarse el post. Puede ser que dicho post no exista en la BBDD."
+											+ ConsoleColors.RESET);
+								}
+
+							} catch (Exception e) {
+								System.out.println(ConsoleColors.RED
+										+ "No pudo eliminarse el post. Puede ser que dicho post no exista en la BBDD."
+										+ ConsoleColors.RESET);
+							}
+
+						} else {
+							System.out.println(ConsoleColors.CYAN + "Cambios revertidos. No se ha efectuado ningún cambio."
+									+ ConsoleColors.RESET);
+						}
+						
+					} catch (Exception e) {
+						System.out.println(ConsoleColors.RED + "Error: El post que has especificado no existe en la BBDD.");
+					}
+
+					
+
+					
+					
+					break;
+					
+				case 3:
+					
+					System.out.println("Introduzca la ID del Like a eliminar.");
+
+					id = sc.nextInt();
+
+					sc.nextLine();
+
+					System.out.println(ConsoleColors.RED_BACKGROUND + "¡ATENCIÓN!" + ConsoleColors.RESET);
+					System.out.println(ConsoleColors.YELLOW + "Estás a punto de eliminar un like que contiene los siguientes datos: "
+							+ ConsoleColors.RESET);
+					
+					try {
+						Accesobd.leerLike(id);
+						
+						System.out.println(ConsoleColors.YELLOW + "¿Quieres confirmar estos cambios?" + ConsoleColors.RESET);
+						System.out.println(ConsoleColors.RED_BOLD_BRIGHT
+								+ "Recuerda que una vez confirmados estos cambios, no podrán revertirse.");
+						System.out.println(ConsoleColors.YELLOW
+								+ "Escriba: \"0\" si no quiere eliminar dicho like, o escriba: \"1\" si quiere confirmar su eliminación."
+								+ ConsoleColors.RESET);
+
+						userInput = sc.nextInt();
+
+						sc.nextLine();
+
+						if (userInput == 1) {
+							try {
+								state = Accesobd.borrarLike(id);
+								
+								if (!state) {
+
+									System.out.println(
+											ConsoleColors.GREEN + "Like eliminado correctamente." + ConsoleColors.RESET);
+								} else {
+									System.out.println(ConsoleColors.RED
+											+ "No pudo eliminarse el Like. Puede ser que dicho like no exista en la BBDD."
+											+ ConsoleColors.RESET);
+								}
+
+							} catch (Exception e) {
+								System.out.println(ConsoleColors.RED
+										+ "No pudo eliminarse el Like. Puede ser que dicho like no exista en la BBDD."
+										+ ConsoleColors.RESET);
+							}
+
+						} else {
+							System.out.println(ConsoleColors.CYAN + "Cambios revertidos. No se ha efectuado ningún cambio."
+									+ ConsoleColors.RESET);
+						}
+						
+					} catch (Exception e) {
+						System.out.println(ConsoleColors.RED + "Error: El like que has especificado no existe en la BBDD.");
+					}
+
+					
+
+					
+					
+					break;
+				
+				}
+				
+
+				
+				
 				break;
 			}
 		}

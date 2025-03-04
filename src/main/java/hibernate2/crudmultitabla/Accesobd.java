@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 
+import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -21,9 +22,10 @@ public class Accesobd {
 	private static SessionFactory sf;
 	private static Session sesion;
 	private static Transaction transaction;
+	private static boolean fk = false;
 
 	protected static void setUp() {
-		// java.util.logging.Logger.getLogger("org.hibernate").setLevel(Level.SEVERE);
+		java.util.logging.Logger.getLogger("org.hibernate").setLevel(Level.SEVERE);
 		final StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure() // por defecto:
 																									// hibernate.cfg.xml
 				.build();
@@ -47,6 +49,17 @@ public class Accesobd {
 		try {
 			transaction.commit();
 		} catch (Exception e) {
+
+			if (e instanceof PersistenceException) {
+				System.out.println(ConsoleColors.RED
+						+ "Error: No se pudo eliminar la fila porque contiene una Foreign Key."
+						+ "Borra primero la fila en la tabla a la que hace referencia para poder borrar esta fila."
+						+ ConsoleColors.RESET);
+				fk = true;
+			} else {
+				fk = false;
+			}
+
 			transaction.rollback();
 		}
 		sf.close();
@@ -65,7 +78,7 @@ public class Accesobd {
 	// Leer Persona
 	public static void leerUsuario(int id) throws Exception {
 		sesion = abrir();
-		EntidadUsuario usuario = sesion.load(EntidadUsuario.class, id);// PersonasEntity persona =
+		EntidadUsuario usuario = sesion.get(EntidadUsuario.class, id);// PersonasEntity persona =
 																		// session.get(PersonasEntity.class, id); //
 																		// Esta línea también funcionaría como la
 																		// anterior
@@ -187,12 +200,19 @@ public class Accesobd {
 	}
 
 	// Borrar persona
-	public static void borrarUsuario(int id) throws Exception {
+	public static boolean borrarUsuario(int id) throws Exception {
+		
+		boolean res;
+		
 		sesion = abrir();
 		EntidadUsuario usuario = sesion.get(EntidadUsuario.class, id);
 		sesion.delete(usuario);
 
 		cerrar();
+		
+		res = fk;
+		
+		return res;
 	}
 
 	/* Fin métodos Usuarios */
@@ -277,12 +297,19 @@ public class Accesobd {
 	}
 
 	// Borrar persona
-	public static void borrarPost(int id) throws Exception {
+	public static boolean borrarPost(int id) throws Exception {
+		
+		boolean res;
+		
 		sesion = abrir();
 		EntidadPost post = sesion.get(EntidadPost.class, id);
 		sesion.delete(post);
-
+		
 		cerrar();
+		
+		res = fk;
+		
+		return fk;
 	}
 
 	/* Fin métodos Posts */
@@ -352,12 +379,19 @@ public class Accesobd {
 	}
 
 	// Borrar persona
-	public static void borrarLike(int id) throws Exception {
+	public static boolean borrarLike(int id) throws Exception {
+		
+		boolean res;
+		
 		sesion = abrir();
 		EntidadLike like = sesion.get(EntidadLike.class, id);
 		sesion.delete(like);
 
 		cerrar();
+		
+		res = fk;
+		
+		return res;
 	}
 
 	/* Fin métodos Likes */
