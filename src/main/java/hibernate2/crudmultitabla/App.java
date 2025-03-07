@@ -2,12 +2,17 @@ package hibernate2.crudmultitabla;
 
 import java.text.DateFormat;
 import java.time.LocalDate;
+
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.Scanner;
+
+import org.hibernate.PropertyValueException;
 
 import hibernate2.crudmultitabla.Accesobd;
 import hibernate2.crudmultitabla.ConsoleColors;
 import hibernate2.crudmultitabla.EntidadUsuario;
+import java.util.List;
 
 /**
  * Hello world!
@@ -33,11 +38,13 @@ public class App {
 				"paco.elbelludo@gmail.com");
 		EntidadPost post = new EntidadPost(usuario, LocalDate.of(1992, 2, 15), LocalDate.of(1992, 2, 15));
 		EntidadLike like = new EntidadLike(usuario, post);
+		
+		List listado = null;
 
 		Scanner sc = new Scanner(System.in);
 
 		System.out
-				.println(ConsoleColors.YELLOW + "¡Bienvenido al CRUD de varias tablas en Java!" + ConsoleColors.RESET);
+				.println(ConsoleColors.YELLOW_BACKGROUND + "¡Bienvenido al CRUD de varias tablas en Java!" + ConsoleColors.RESET);
 		System.out.println(ConsoleColors.GREEN + "⢀⡴⠑⡄⠀⠀⠀⠀⠀⠀⠀⣀⣀⣤⣤⣤⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ \r\n"
 				+ "⠸⡇⠀⠿⡀⠀⠀⠀⣀⡴⢿⣿⣿⣿⣿⣿⣿⣿⣷⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀ \r\n" + "⠀⠀⠀⠀⠑⢄⣠⠾⠁⣀⣄⡈⠙⣿⣿⣿⣿⣿⣿⣿⣿⣆⠀⠀⠀⠀⠀⠀⠀⠀ \r\n"
 				+ "⠀⠀⠀⠀⢀⡀⠁⠀⠀⠈⠙⠛⠂⠈⣿⣿⣿⣿⣿⠿⡿⢿⣆⠀⠀⠀⠀⠀⠀⠀ \r\n" + "⠀⠀⠀⢀⡾⣁⣀⠀⠴⠂⠙⣗⡀⠀⢻⣿⣿⠭⢤⣴⣦⣤⣹⠀⠀⠀⢀⢴⣶⣆ \r\n"
@@ -115,7 +122,10 @@ public class App {
 
 							nombre = sc.nextLine();
 
-							System.out.println(Accesobd.leerUsuarioNombre(nombre));
+							listado = Accesobd.leerUsuarioNombre(nombre);
+							
+							
+							
 							break;
 
 						case 2:
@@ -123,7 +133,8 @@ public class App {
 
 							apellidos = sc.nextLine();
 
-							System.out.println(Accesobd.leerUsuarioApellidos(apellidos));
+							listado = Accesobd.leerUsuarioApellidos(apellidos);
+
 							break;
 
 						case 3:
@@ -131,9 +142,14 @@ public class App {
 
 							username = sc.nextLine();
 
-							System.out.println(Accesobd.leerUsuarioUsername(username));
+							listado = Accesobd.leerUsuarioUsername(username);
+							
 							break;
 
+						}
+						
+						for(Object usuarioListado : listado) {
+							System.out.println(usuarioListado);
 						}
 
 					} else {
@@ -224,35 +240,48 @@ public class App {
 					System.out.println("El formato de la fecha debe ser el siguiente:");
 					System.out.println("Ejemplo: 2025-12-03");
 
-					fechaCreacion = LocalDate.parse(sc.nextLine());
-
-					System.out.println("Introduzca la fecha de actualización del post:");
-					System.out.println("El formato de la fecha debe ser el siguiente:");
-					System.out.println("Ejemplo: 2025-12-03");
-
-					fechaUpdate = LocalDate.parse(sc.nextLine());
-
+					
 					try {
-						usuario = Accesobd.obtenerUsuario(id);
-					} catch (Exception e) {
-						System.out.println(ConsoleColors.RED
-								+ "Error: ID del usuario al que hace referencia el Post no fue encontrado."
-								+ ConsoleColors.RESET);
+						fechaCreacion = LocalDate.parse(sc.nextLine());
+						
+
+						System.out.println("Introduzca la fecha de actualización del post:");
+						System.out.println("El formato de la fecha debe ser el siguiente:");
+						System.out.println("Ejemplo: 2025-12-03");
+						
+						fechaUpdate = LocalDate.parse(sc.nextLine());
+						
+
+
+
+						try {
+							usuario = Accesobd.obtenerUsuario(id);
+						} catch (Exception e) {
+							System.out.println(ConsoleColors.RED
+									+ "Error: ID del usuario al que hace referencia el Post no fue encontrado."
+									+ ConsoleColors.RESET);
+						}
+
+						post.setUsuario(usuario);
+						post.setCreatedAt(fechaCreacion);
+						post.setUpdatedAt(fechaUpdate);
+
+						try {
+
+							Accesobd.guardarPost(post);
+
+							System.out.println(ConsoleColors.GREEN + "Post guardado correctamente." + ConsoleColors.RESET);
+
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					} catch(DateTimeParseException e) {
+						System.out.println(ConsoleColors.RED + "Error: Has introducido la fecha en un formato no válido. Por favor, la próxima vez introduce la fecha con este formato:" + ConsoleColors.RESET);
+						System.out.println(ConsoleColors.CYAN + "Ejemplo: 2025-12-03" + ConsoleColors.RESET);
 					}
+					
+					
 
-					post.setUsuario(usuario);
-					post.setCreatedAt(fechaCreacion);
-					post.setUpdatedAt(fechaUpdate);
-
-					try {
-
-						Accesobd.guardarPost(post);
-
-						System.out.println(ConsoleColors.GREEN + "Post guardado correctamente." + ConsoleColors.RESET);
-
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
 
 					break;
 
@@ -287,7 +316,14 @@ public class App {
 						System.out.println(ConsoleColors.GREEN + "Like guardado correctamente." + ConsoleColors.RESET);
 
 					} catch (Exception e) {
-						e.printStackTrace();
+						
+						if(e instanceof PropertyValueException) {
+							System.out.println(ConsoleColors.RED + "Error: Has introducido valores en los campos de Foreign Key que no existen en la BBDD." + ConsoleColors.RESET);
+						} else {
+							e.printStackTrace();
+						}
+						
+						
 					}
 
 					break;
@@ -650,11 +686,11 @@ public class App {
 	}
 
 	private static void Menu() {
-		System.out.println("1. Leer Tabla.");
-		System.out.println("2. Insertar datos en Tablas.");
-		System.out.println("3. Editar datos de una Tabla.");
-		System.out.println("4. Borrar datos Tabla.");
-		System.out.println("5. Salir.");
+		System.out.println(ConsoleColors.CYAN + "1. Leer Tabla." + ConsoleColors.RESET);
+		System.out.println(ConsoleColors.CYAN + "2. Insertar datos en Tablas." + ConsoleColors.RESET);
+		System.out.println(ConsoleColors.CYAN + "3. Editar datos de una Tabla." + ConsoleColors.RESET);
+		System.out.println(ConsoleColors.CYAN + "4. Borrar datos Tabla." + ConsoleColors.RESET);
+		System.out.println(ConsoleColors.CYAN + "5. Salir." + ConsoleColors.RESET);
 	}
 
 	private static void menuTabla() {

@@ -20,11 +20,11 @@ public class EntidadLike implements Serializable {
 	@Column(name = "idLikes")
 	private int idLikes;
 	@ManyToOne
-	@JoinColumn(name = "idUsuario")
+	@JoinColumn(name = "idUsuario", nullable = false)
 	private EntidadUsuario usuario;
 
 	@ManyToOne
-	@JoinColumn(name = "idPosts")
+	@JoinColumn(name = "idPosts", nullable = false)
 	private EntidadPost post;
 
 	public EntidadLike() {
@@ -59,6 +59,18 @@ public class EntidadLike implements Serializable {
 
 	public void setPost(EntidadPost post) {
 		this.post = post;
+	}
+	
+	@Override
+	public String toString() {
+		String res = "";
+		
+		res = ConsoleColors.GREEN + "ID Like: " + ConsoleColors.RESET + Integer.toString(idLikes) + "\n" +
+				ConsoleColors.GREEN + "ID Usuario: " + ConsoleColors.RESET + Integer.toString(usuario.getIdUsuario()) + "\n" +
+				ConsoleColors.GREEN + "ID Post: " + ConsoleColors.RESET + Integer.toString(post.getIdPosts()) + "\n" +
+				ConsoleColors.BLACK + "-----------------------" + "\n" + ConsoleColors.RESET;
+		
+		return res;
 	}
 
 }

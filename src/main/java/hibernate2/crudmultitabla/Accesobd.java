@@ -11,12 +11,14 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.query.Query;
 
 public class Accesobd {
 	private static SessionFactory sf;
@@ -25,7 +27,7 @@ public class Accesobd {
 	private static boolean fk = false;
 
 	protected static void setUp() {
-		java.util.logging.Logger.getLogger("org.hibernate").setLevel(Level.SEVERE);
+		java.util.logging.Logger.getLogger("org.hibernate").setLevel(Level.OFF);
 		final StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure() // por defecto:
 																									// hibernate.cfg.xml
 				.build();
@@ -52,8 +54,8 @@ public class Accesobd {
 
 			if (e instanceof PersistenceException) {
 				System.out.println(ConsoleColors.RED
-						+ "Error: No se pudo eliminar la fila porque contiene una Foreign Key."
-						+ "Borra primero la fila en la tabla a la que hace referencia para poder borrar esta fila."
+						+ "Error: No se pudo eliminar o editar la fila porque contiene una Foreign Key no válida."
+						+ "Borra primero la fila en la tabla a la que hace referencia para poder borrar esta fila.\nO si estabas editando la fila e intentaste añadir una Foreign Key no válida, no tienes que hacer nada. Los cambios fueron desechados automáticamente."
 						+ ConsoleColors.RESET);
 				fk = true;
 			} else {
@@ -82,11 +84,7 @@ public class Accesobd {
 																		// session.get(PersonasEntity.class, id); //
 																		// Esta línea también funcionaría como la
 																		// anterior
-		System.out.println("Nombre: " + usuario.getNombre());
-		System.out.println("Apellidos: " + usuario.getApellidos());
-		System.out.println("Usuario: " + usuario.getUsername());
-		System.out.println("Contraseña: " + usuario.getPassword());
-		System.out.println("Correo electrónico: " + usuario.getEmail());
+		System.out.println(usuario);
 		cerrar();
 	}
 
@@ -119,13 +117,7 @@ public class Accesobd {
 		listado.forEach((usuarioListado) -> {
 
 			if (usuarioListado != null) {
-				System.out.println("ID: " + Integer.toString(usuarioListado.getIdUsuario()));
-				System.out.println("Nombre: " + usuarioListado.getNombre());
-				System.out.println("Apellidos: " + usuarioListado.getApellidos());
-				System.out.println("Usuario: " + usuarioListado.getUsername());
-				System.out.println("Contraseña: " + usuarioListado.getPassword());
-				System.out.println("Correo electrónico: " + usuarioListado.getEmail());
-				System.out.println(ConsoleColors.BLACK + "-----------------------" + ConsoleColors.RESET);
+				System.out.println(usuarioListado);
 			}
 
 		});
@@ -141,7 +133,7 @@ public class Accesobd {
 			e.printStackTrace();
 		}
 
-		List listado = sesion.createQuery("SELECT nombre FROM EntidadUsuario WHERE nombre LIKE :nombreUser")
+		List listado = sesion.createQuery("SELECT c FROM EntidadUsuario c WHERE nombre LIKE :nombreUser")
 				.setParameter("nombreUser", name).setMaxResults(10).getResultList();
 
 		cerrar();
@@ -158,7 +150,7 @@ public class Accesobd {
 			e.printStackTrace();
 		}
 
-		List listado = sesion.createQuery("SELECT apellidos FROM EntidadUsuario WHERE apellidos LIKE :apellidosUser")
+		List listado = sesion.createQuery("SELECT c FROM EntidadUsuario c WHERE apellidos LIKE :apellidosUser")
 				.setParameter("apellidosUser", apellidos).setMaxResults(10).getResultList();
 
 		cerrar();
@@ -175,7 +167,7 @@ public class Accesobd {
 			e.printStackTrace();
 		}
 
-		List listado = sesion.createQuery("SELECT username FROM EntidadUsuario WHERE username LIKE :usernameUser")
+		List listado = sesion.createQuery("SELECT c FROM EntidadUsuario c WHERE username LIKE :usernameUser")
 				.setParameter("usernameUser", username).setMaxResults(10).getResultList();
 
 		cerrar();
@@ -188,11 +180,8 @@ public class Accesobd {
 			String email) throws Exception {
 		sesion = abrir();
 		EntidadUsuario usuario = sesion.get(EntidadUsuario.class, id);
-		usuario.setNombre(nombre);
-		usuario.setApellidos(apellidos);
-		usuario.setUsername(username);
-		usuario.setPassword(password);
-		usuario.setEmail(email);
+
+		System.out.println(usuario);
 
 		// session.saveOrUpdate(persona); // session.merge(persona);
 		sesion.update(usuario);
@@ -201,17 +190,17 @@ public class Accesobd {
 
 	// Borrar persona
 	public static boolean borrarUsuario(int id) throws Exception {
-		
+
 		boolean res;
-		
+
 		sesion = abrir();
 		EntidadUsuario usuario = sesion.get(EntidadUsuario.class, id);
 		sesion.delete(usuario);
 
 		cerrar();
-		
+
 		res = fk;
-		
+
 		return res;
 	}
 
@@ -237,10 +226,7 @@ public class Accesobd {
 																// session.get(PersonasEntity.class, id); //
 																// Esta línea también funcionaría como la
 																// anterior
-		System.out.println("Id Post: " + Integer.toString(post.getIdPosts()));
-		System.out.println("Id Usuario: " + Integer.toString(post.getUsuario().getIdUsuario()));
-		System.out.println("Creado el: " + post.getCreatedAt());
-		System.out.println("Actualizado el: " + post.getUpdatedAt());
+		System.out.println(post);
 		cerrar();
 	}
 
@@ -272,11 +258,7 @@ public class Accesobd {
 		listado.forEach((postListado) -> {
 
 			if (postListado != null) {
-				System.out.println("Id Post: " + Integer.toString(postListado.getIdPosts()));
-				System.out.println("Id Usuario: " + Integer.toString(postListado.getUsuario().getIdUsuario()));
-				System.out.println("Creado el: " + postListado.getCreatedAt());
-				System.out.println("Actualizado el: " + postListado.getUpdatedAt());
-				System.out.println(ConsoleColors.BLACK + "-----------------------" + ConsoleColors.RESET);
+				System.out.println(postListado);
 			}
 
 		});
@@ -298,17 +280,17 @@ public class Accesobd {
 
 	// Borrar persona
 	public static boolean borrarPost(int id) throws Exception {
-		
+
 		boolean res;
-		
+
 		sesion = abrir();
 		EntidadPost post = sesion.get(EntidadPost.class, id);
 		sesion.delete(post);
-		
+
 		cerrar();
-		
+
 		res = fk;
-		
+
 		return fk;
 	}
 
@@ -332,9 +314,7 @@ public class Accesobd {
 																// session.get(PersonasEntity.class, id); //
 																// Esta línea también funcionaría como la
 																// anterior
-		System.out.println("Id Like: " + Integer.toString(like.getIdLikes()));
-		System.out.println("Id Usuario: " + Integer.toString(like.getUsuario().getIdUsuario()));
-		System.out.println("Id Post: " + Integer.toString(like.getPost().getIdPosts()));
+		System.out.println(like);
 		cerrar();
 	}
 
@@ -357,10 +337,7 @@ public class Accesobd {
 		listado.forEach((likeListado) -> {
 
 			if (likeListado != null) {
-				System.out.println("Id Like: " + Integer.toString(likeListado.getIdLikes()));
-				System.out.println("Id Usuario: " + Integer.toString(likeListado.getUsuario().getIdUsuario()));
-				System.out.println("Id Post: " + Integer.toString(likeListado.getPost().getIdPosts()));
-				System.out.println(ConsoleColors.BLACK + "-----------------------" + ConsoleColors.RESET);
+				System.out.println(likeListado);
 			}
 
 		});
@@ -380,18 +357,49 @@ public class Accesobd {
 
 	// Borrar persona
 	public static boolean borrarLike(int id) throws Exception {
-		
+
 		boolean res;
-		
+
 		sesion = abrir();
 		EntidadLike like = sesion.get(EntidadLike.class, id);
 		sesion.delete(like);
 
 		cerrar();
-		
+
 		res = fk;
-		
+
 		return res;
+	}
+	
+	public static void dropearTabla(int tabla) {
+		
+
+		
+		try {
+			sesion = abrir();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		switch (tabla) {
+		
+		case 1:
+			sesion.createNativeQuery("DROP TABLE Usuarios").executeUpdate();
+			System.out.println(ConsoleColors.GREEN + "Tabla Usuarios eliminada correctamente." + ConsoleColors.RESET);
+			break;
+			
+		case 2:
+			sesion.createNativeQuery("drop table Posts").executeUpdate();
+			System.out.println(ConsoleColors.GREEN + "Tabla Posts eliminada correctamente." + ConsoleColors.RESET);
+			break;
+			
+		case 3:
+			sesion.createNativeQuery("drop table Likes").executeUpdate();
+			System.out.println(ConsoleColors.GREEN + "Tabla Likes eliminada correctamente." + ConsoleColors.RESET);
+			break;
+		
+		}
 	}
 
 	/* Fin métodos Likes */

@@ -92,4 +92,19 @@ public class EntidadUsuario implements Serializable {
 		this.email = email;
 	}
 
+	
+	@Override
+	public String toString() {
+		String res = "";
+		
+		res = ConsoleColors.GREEN + "ID: " + ConsoleColors.RESET + Integer.toString(idUsuario) + "\n" +
+				ConsoleColors.GREEN + "Nombre: " + ConsoleColors.RESET + nombre + "\n" +
+				ConsoleColors.GREEN + "Apellidos: " + ConsoleColors.RESET + apellidos + "\n" +
+				ConsoleColors.GREEN + "Usuario: " + ConsoleColors.RESET + username + "\n" +
+				ConsoleColors.GREEN + "Contraseña: " + ConsoleColors.RESET + password + "\n" +
+				ConsoleColors.GREEN + "Correo electrónico: " + ConsoleColors.RESET + email + "\n" +
+				ConsoleColors.BLACK + "-----------------------" + "\n" + ConsoleColors.RESET;
+		
+		return res;
+	}
 }

@@ -24,7 +24,7 @@ public class EntidadPost implements Serializable {
 	@Column(name = "idPosts")
 	private int idPosts;
 	@ManyToOne
-	@JoinColumn(name = "idUsuario")
+	@JoinColumn(name = "idUsuario", nullable = false)
 	private EntidadUsuario usuario;
 
 	@Column(name = "created_at")
@@ -74,6 +74,20 @@ public class EntidadPost implements Serializable {
 
 	public void setUpdatedAt(LocalDate updatedAt) {
 		this.updatedAt = updatedAt;
+	}
+	
+	
+	@Override
+	public String toString() {
+		String res = "";
+		
+		res = ConsoleColors.GREEN + "ID Post: " + ConsoleColors.RESET + Integer.toString(idPosts) + "\n" +
+				ConsoleColors.GREEN + "ID Usuario: " + ConsoleColors.RESET + Integer.toString(usuario.getIdUsuario()) + "\n" +
+				ConsoleColors.GREEN + "Creado el: " + ConsoleColors.RESET + createdAt + "\n" +
+				ConsoleColors.GREEN + "Actualizado el: " + ConsoleColors.RESET + updatedAt + "\n" +
+				ConsoleColors.BLACK + "-----------------------" + "\n" + ConsoleColors.RESET;
+		
+		return res;
 	}
 
 }
